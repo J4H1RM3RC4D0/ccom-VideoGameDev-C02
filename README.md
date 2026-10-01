@@ -1,10 +1,10 @@
-# Yax Witz: The Lost City in the Valley
+# The Lost City 
 
 **CCOM4302 – Video Games Development · Challenge 02**
 Universidad de Puerto Rico, Recinto de Río Piedras · Dr. David Israel Flores Granados
 Unity 6 (6000.5.10f1) · Universal Render Pipeline · ProBuilder 6.1.2
 
-**Team:** _TODO: add team member names_
+**Team:** _TODO: Jahir Mercado, 
 
 ![Overview of the city in its valley](Docs/Screenshots/01_overview.png)
 
@@ -24,34 +24,17 @@ Unity 6 (6000.5.10f1) · Universal Render Pipeline · ProBuilder 6.1.2
 
 ## The Story
 
-For more than thirty years, Professor Andrés Chan Uc chased a single line of carved glyphs. He first saw it as a graduate student on a weathered panel in a museum storeroom. The inscription named a city called *Yax Witz*, the "First Mountain." It said the city was "held in the hands of the mountains," and it claimed that the city's lords had copied the sacred temples of Palenque and the sky-watching tower of Chichén Itzá, then set both inside a single valley. Most of his colleagues thought the city was a myth, or a scribe's exaggeration. The professor spent his summers, his savings, and eventually his career on survey flights, LiDAR maps and long treks through the rainforest of the Maya lowlands. Each season ended the same way: another ridge, another empty valley.
+For more than thirty years, Professor Ian Curtis chased a single line of carved glyphs. He first saw it as a child in a museum. The inscription named a lost city. It said the city was "cradled by the mountains", and it claimed that the city's lords had copied the sacred temples of Palenque and the sky-watching tower of Chichén Itzá, then set both inside a single valley. Most of his colleagues thought the city was a myth. The professor spent his summers, his savings, and eventually his career on survey flights, LiDAR maps and long treks through the rainforest of the Maya lowlands. Each season ended the same way: another ridge, another empty valley.
 
-In his final field season, the survey team followed a dry riverbed through a gap in a wall of jagged peaks, and the forest opened onto a hidden valley. At its heart stood a stepped pyramid crowned by a roof comb, facing a round observatory across a white stone causeway. Both were almost untouched. The professor photographed every stone. The photographs in this repository are his. Back home, he spent his last years turning those photographs into a hand-carved miniature of the city. He sculpted every terrace, stairway and stela by hand, and painted the valley floor and mountains to match what he had seen. He called the model "a letter to the people who built it."
+In his final field season, the survey team followed a dry riverbed through a gap in a wall of jagged peaks, and the forest opened onto a hidden valley. At its heart stood a stepped pyramid crowned by a roof comb, facing a round observatory across a white stone causeway. Both were almost untouched. The professor photographed every stone. The photographs in this repository are his. Back home, he spent his last years turning those photographs into a hand-carved miniature of the city.
 
-We are the college students who worked beside him: first as field assistants on the expedition, and now as the team responsible for archiving and recompiling his work. A hand-carved model is fragile, and photographs fade, so we rebuilt his miniature in Unity to preserve it. Every building is modeled in ProBuilder the way he carved it: block by block, tier by tier. The terrain follows the real height data of the Maya forest. The valley is painted layer by layer, as he painted his model. This project is our recreation of his recreation: a digital archive of a lifetime of searching, and the first step toward a game in which players retrace the expedition and discover Yax Witz for themselves.
-
-> *The professor, the expedition and the city of Yax Witz are fictional. The two buildings, the rulers and the history described below are real.*
+We are the college students who worked beside him. First as field assistants on the expedition, and now as the team responsible for archiving and recompiling his work. A hand-carved model is fragile, and photographs fade, so we rebuilt his miniature in Unity to preserve it. Every building is modeled in ProBuilder the way he carved it: block by block, tier by tier. The terrain follows the real height data of the Maya forest. The valley is painted layer by layer, as he painted his model. This project is our recreation of his recreation: a digital archive of a lifetime of searching, and the first step toward a game in which players retrace the expedition and discover The Lost City for themselves.
 
 ---
-
-## Historical Background
-
-The professor's city borrows its two great buildings from two of the most important Maya sites. We modeled both from their real reference designs.
-
-### The Temple of the Foliated Cross (Palenque, Chiapas, Mexico)
-
-- **The Cross Group.** Palenque (*Lakamha'*, "Big Water") was the capital of the kingdom of *B'aakal*. Its most famous ruler, **K'inich Janaab' Pakal I** ("Pakal the Great"), reigned from 615 to 683 CE and was buried in the Temple of the Inscriptions. His son, **K'inich Kan Bahlam II** (reigned 684–702 CE), built the *Cross Group*: three temples dedicated in 692 CE, the Temple of the Cross, the Temple of the Sun and the Temple of the Foliated Cross.
-- **The Foliated Cross.** Each temple has an inner shrine holding a carved tablet. In the Temple of the Foliated Cross, the tablet shows a "cross" that is really a sprouting maize plant, the Maya world tree, with the heads of maize gods as its ears. Kan Bahlam stands beside it. The temple is linked to the patron god GII (Unen K'awiil) and to agricultural abundance.
-- **Architecture.** Palenque temples sit on stepped platforms with a steep central stairway. The temple itself has three front doorways, an inner sanctuary, a sloping *mansard* upper facade, and a tall latticed **roof comb** (*crestería*) on top. Many surfaces were once covered in red-painted stucco.
 
 **In our model:**
 - **Pyramid:** four tapered tiers with cornices and a projecting stairway flanked by sloped balustrades (*alfardas*).
 - **Temple:** three doorways, the inner shrine with the Foliated Cross tablet (a cross sprouting maize leaves and ears), a red mansard roof, and the lattice roof comb.
-
-### El Caracol (Chichén Itzá, Yucatán, Mexico)
-
-- **The observatory.** Chichén Itzá rose to power in the Terminal Classic period (about 800–1000 CE); a ruler named **K'ak'upakal** appears in its 9th-century inscriptions. **El Caracol** ("the snail," named for the spiral staircase inside its tower) is a round tower on two stacked rectangular platforms. It was built in several stages during this period.
-- **Astronomy.** The windows that survive in its upper chamber line up with the equinox sunset and with the northern and southern extremes of the planet **Venus** on the horizon. Venus was central to Maya timekeeping and warfare; the *Dresden Codex*, one of the few surviving Maya books, contains a detailed Venus table.
 
 **In our model:** two stacked platforms with stairways, a round base drum, the cylindrical tower with four doorways and stone moldings, and an upper drum with **three window slits** aimed across the valley. A dome replaces the collapsed top.
 
@@ -77,8 +60,6 @@ The professor's city borrows its two great buildings from two of the most import
 ---
 
 ## How We Built It (Step by Step)
-
-We followed the seven steps of the Challenge 02 instructions. All of the building work is also automated as editor scripts (see [Reproducing the Scene](#reproducing-the-scene)), so each step can be re-run on its own from the **Mayan City › Steps** menu.
 
 ### Step 0: Project Setup
 
@@ -106,7 +87,7 @@ We followed the seven steps of the Challenge 02 instructions. All of the buildin
 
 Both buildings are built entirely from ProBuilder shapes (**Tools › ProBuilder › ProBuilder Window › New Shape**). We followed the hints at <https://styly.cc/tips/probuilder-modeling/>.
 
-**Temple of the Foliated Cross** (54 ProBuilder shapes):
+**The Temple** (54 ProBuilder shapes):
 1. **Tiers:** four **Cubes** of decreasing size, stacked into a stepped pyramid. We moved the top-face vertices inward on each cube so the walls slope (the *talud*).
 2. **Cornices:** a thin, slightly wider cube as a cornice on top of each tier.
 3. **Stairway:** a **Stair** shape with 36 steps, projecting out from the pyramid so its slope clears every tier. Two sloped cubes form the side balustrades.
@@ -114,7 +95,7 @@ Both buildings are built entirely from ProBuilder shapes (**Tools › ProBuilder
 5. **Sanctuary:** an inner wall with a central doorway, behind which is the shrine with the **Foliated Cross tablet**.
 6. **Roof:** a cube with its top face scaled down to form the sloping **mansard roof**, and a **roof comb** made of posts and cross-bars.
 
-**El Caracol** (30 ProBuilder shapes):
+**The Lighthouse** (30 ProBuilder shapes):
 1. **Platforms:** two stacked, tapered platforms (cubes), each with a cornice and a **Stair** shape with balustrades.
 2. **Tower:** **Cylinders** for the round base drum, the tower, its moldings, and the upper drum.
 3. **Openings:** four dark doorways with lintels on the tower, and three narrow **astronomical window slits** on the upper drum.
@@ -155,42 +136,10 @@ Both buildings are built entirely from ProBuilder shapes (**Tools › ProBuilder
 2. **Sky:** a procedural skybox.
 3. **Haze:** light exponential fog to suggest the humid air of the rainforest.
 4. **Camera:** the Main Camera frames the overview of the valley.
-
----
-
-## Reproducing the Scene
-
-The scene is generated by the editor scripts in `Assets/MayanCity/Editor/`. They add a **Mayan City** menu to Unity:
-
-| Menu item | What it does |
-|---|---|
-| **Build Everything** | Rebuilds the entire scene: terrain, paint, buildings, details, grass, placeholders and lighting. |
-| **Steps › 1 – 8** | Runs one step at a time (useful for step-by-step screenshots). |
-| **Capture Screenshots** | Saves the six views above to `Docs/Screenshots/`. |
-
-To use the real height map, place the `.raw` / `.r16` file in `Assets/MayanCity/Heightmap/` and run **Build Everything**. The script detects 8/16-bit and byte order automatically, then reduces the map to 33 × 33.
-
----
-
-## Project Structure
-
-```
-Assets/
-  Scenes/MayanCity.unity          the finished scene
-  MayanCity/
-    Editor/                       builder scripts (terrain, ProBuilder buildings, textures)
-    Heightmap/                    put the Maya Forest RAW file here
-    Generated/                    generated textures, materials and terrain layers
-  Settings/                       URP pipeline and renderer assets
-Docs/Screenshots/                 the professor's "photographs" (scene captures)
-```
-
+5. 
 ---
 
 ## References
 
-- Martin, S. & Grube, N. (2008). *Chronicle of the Maya Kings and Queens* (2nd ed.). Thames & Hudson.
-- Stuart, D. & Stuart, G. (2008). *Palenque: Eternal City of the Maya*. Thames & Hudson.
-- Aveni, A. F. (2001). *Skywatchers*. University of Texas Press. (El Caracol and Venus alignments)
 - Unity Technologies. *ProBuilder* and *Terrain* documentation. <https://docs.unity3d.com>
 - STYLY. *ProBuilder modeling tips*. <https://styly.cc/tips/probuilder-modeling/>
