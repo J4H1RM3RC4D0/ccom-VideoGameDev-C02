@@ -4,7 +4,7 @@
 Universidad de Puerto Rico, Recinto de Río Piedras · Dr. David Israel Flores Granados
 Unity 6 (6000.5.10f1) · Universal Render Pipeline · ProBuilder 6.1.2
 
-**Team:** _TODO: Jahir Mercado, 
+**Team:**: Jahir Mercado, 
 
 ![Overview of the city in its valley](Docs/Screenshots/01_overview.png)
 
