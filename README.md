@@ -4,7 +4,7 @@
 Universidad de Puerto Rico, Recinto de Río Piedras · Dr. David Israel Flores Granados
 Unity 6 (6000.5.10f1) · Universal Render Pipeline · ProBuilder 6.1.2
 
-**Team:**: Jahir Mercado, 
+**Team:** Jahir Mercado
 
 ![Overview of the city in its valley](Docs/Screenshots/01_overview.png)
 
@@ -13,12 +13,10 @@ Unity 6 (6000.5.10f1) · Universal Render Pipeline · ProBuilder 6.1.2
 ## Table of Contents
 
 1. [The Story](#the-story)
-2. [Historical Background](#historical-background)
+2. [The City](#the-city)
 3. [Scene Tour](#scene-tour)
 4. [How We Built It (Step by Step)](#how-we-built-it-step-by-step)
-5. [Reproducing the Scene](#reproducing-the-scene)
-6. [Project Structure](#project-structure)
-7. [References](#references)
+5. [References](#references)
 
 ---
 
@@ -33,10 +31,10 @@ We are the college students who worked beside him. First as field assistants on 
 ---
 ### The City
 
-- **Sacbe:** Maya cities were linked by *sacbeob*, raised white causeways of limestone plaster. In Yax Witz, a sacbe joins the temple to the observatory across a central plaza with a round altar.
-- **Stelae:** carved stone monuments raised to record dates and royal deeds stand on the plaza.
-- **Houses:** thatched houses on low stone platforms, like the homes of the common people, sit around the civic center.
-- **Wildlife:** the placeholder animals represent species native to the Maya lowlands: the jaguar (*balam*), the scarlet macaw, the white-tailed deer and the Baird's tapir.
+- **Causeway:** a raised white stone road joins Temple 1 to Temple 2 across a central plaza with a round altar.
+- **Stone pillars:** tall carved stone pillars stand on the plaza.
+- **Houses:** thatched houses on low stone platforms sit around the center of the city.
+- **Wildlife:** the placeholder animals are jungle animals: jaguars, scarlet macaws, a deer and a tapir.
 
 ---
 
@@ -44,8 +42,8 @@ We are the college students who worked beside him. First as field assistants on 
 
 | | |
 |---|---|
-| ![Temple](Docs/Screenshots/02_temple_foliated_cross.png) **Temple of the Foliated Cross**: stepped pyramid, projecting stairway, three-door temple, mansard roof and roof comb. | ![El Caracol](Docs/Screenshots/03_el_caracol.png) **El Caracol**: two platforms, round tower with doorways, window slits and dome. |
-| ![Top-down view of the terrain](Docs/Screenshots/04_terrain_top_down.png) **Top-down map**: the valley, the paved plaza and causeway, the trails and the ring of mountains. | ![Plaza at eye level](Docs/Screenshots/05_plaza_eye_level.png) **Eye level from the plaza**: the view a visitor would have walking toward the temple. |
+| ![Temple 1](Docs/Screenshots/02_temple_1.png) **Temple 1**: stepped pyramid, projecting stairway, three-door temple, sloped roof and decorative roof crest. | ![Temple 2](Docs/Screenshots/03_temple_2.png) **Temple 2**: two platforms, round tower with doorways, window slits and dome. |
+| ![Top-down view of the terrain](Docs/Screenshots/04_terrain_top_down.png) **Top-down map**: the valley, the paved plaza and causeway, the trails and the ring of mountains. | ![Plaza at eye level](Docs/Screenshots/05_plaza_eye_level.png) **Eye level from the plaza**: the view a visitor would have walking toward Temple 1. |
 
 ![The valley seen from the mountains](Docs/Screenshots/06_valley_from_the_mountains.png)
 *The valley as the expedition first saw it, looking down from the mountain pass.*
@@ -63,7 +61,7 @@ We are the college students who worked beside him. First as field assistants on 
 
 ### Step 1: Landscape Modeling from the Height Map
 
-1. We downloaded a RAW height map of the Maya Forest from the **"landscapes"** folder in MS Teams.
+1. We downloaded a RAW height map from the **"landscapes"** folder in MS Teams.
 2. We created the terrain with **GameObject › 3D Object › Terrain**. Size: 400 × 400 m, maximum height 150 m.
 3. In the terrain's **Terrain Settings** (gear icon), we clicked **Import Raw…**, selected the file, and matched its **Depth** (8- or 16-bit) and **Byte Order** (Windows) to the file.
 4. The imported terrain looked very rugged, so, as the instructions say, we reduced the **Heightmap Resolution to 33 × 33**. This smooths the landform while keeping its overall shape.
@@ -73,30 +71,30 @@ We are the college students who worked beside him. First as field assistants on 
 ### Step 2: Modifying the Terrain
 
 1. With **Sculpt › Set Height** and **Smooth Height**, we flattened a plateau in the center of the valley for the city.
-2. With **Raise or Lower Terrain**, we raised a narrow band of mountain ranges along the borders. The ranges have peaks of different heights, and the tallest, most jagged peaks are at the four corners. This gives the "city held in the hands of the mountains" from the story.
+2. With **Raise or Lower Terrain**, we raised a narrow band of mountain ranges along the borders. The ranges have peaks of different heights, and the tallest, most jagged peaks are at the four corners. This gives the city "cradled by the mountains" from the story.
 3. We smoothed the transition between the valley floor and the foothills so there are no hard seams.
 
-### Step 3: Building the Pyramids with ProBuilder
+### Step 3: Building the Temples with ProBuilder
 
 Both buildings are built entirely from ProBuilder shapes (**Tools › ProBuilder › ProBuilder Window › New Shape**). We followed the hints at <https://styly.cc/tips/probuilder-modeling/>.
 
-**The Temple** (54 ProBuilder shapes):
-1. **Tiers:** four **Cubes** of decreasing size, stacked into a stepped pyramid. We moved the top-face vertices inward on each cube so the walls slope (the *talud*).
+**Temple 1** (54 ProBuilder shapes):
+1. **Tiers:** four **Cubes** of decreasing size, stacked into a stepped pyramid. We moved the top-face vertices inward on each cube so the walls slope.
 2. **Cornices:** a thin, slightly wider cube as a cornice on top of each tier.
 3. **Stairway:** a **Stair** shape with 36 steps, projecting out from the pyramid so its slope clears every tier. Two sloped cubes form the side balustrades.
-4. **Temple walls:** a plinth, back and side walls, and a front facade of four piers that frame **three doorways** under a carved lintel with glyph blocks.
-5. **Sanctuary:** an inner wall with a central doorway, behind which is the shrine with the **Foliated Cross tablet**.
-6. **Roof:** a cube with its top face scaled down to form the sloping **mansard roof**, and a **roof comb** made of posts and cross-bars.
+4. **Temple walls:** a plinth, back and side walls, and a front facade of four piers that frame **three doorways** under a carved stone beam.
+5. **Sanctuary:** an inner wall with a central doorway, behind which is a small room with a **carved stone tablet**.
+6. **Roof:** a cube with its top face scaled down to form the **sloped roof**, and a decorative **roof crest** made of posts and cross-bars.
 
-**The Lighthouse** (30 ProBuilder shapes):
+**Temple 2** (30 ProBuilder shapes):
 1. **Platforms:** two stacked, tapered platforms (cubes), each with a cornice and a **Stair** shape with balustrades.
 2. **Tower:** **Cylinders** for the round base drum, the tower, its moldings, and the upper drum.
-3. **Openings:** four dark doorways with lintels on the tower, and three narrow **astronomical window slits** on the upper drum.
+3. **Openings:** four dark doorways with lintels on the tower, and three narrow **window slits** on the upper drum.
 4. **Dome:** an **Icosahedron** sphere, half sunk into the upper drum.
 
-**City details:** a long cube for the **sacbe** (causeway), cylinders for the altars, cubes for the **stelae**, and cube + **Prism** houses with thatched roofs.
+**City details:** a long cube for the **causeway**, cylinders for the altars, cubes for the **stone pillars**, and cube + **Prism** houses with thatched roofs.
 
-### Step 4: Placing the Pyramids and Painting the Terrain
+### Step 4: Placing the Temples and Painting the Terrain
 
 1. We placed both buildings on the flattened plateau, facing each other across the plaza, with their foundations sunk slightly into the ground so no gaps show.
 2. With **Paint Texture**, we created five **Terrain Layers** and painted them in turn:
