@@ -28,16 +28,9 @@ For more than thirty years, Professor Ian Curtis chased a single line of carved 
 
 In his final field season, the survey team followed a dry riverbed through a gap in a wall of jagged peaks, and the forest opened onto a hidden valley. At its heart stood a stepped pyramid crowned by a roof comb, facing a round observatory across a white stone causeway. Both were almost untouched. The professor photographed every stone. The photographs in this repository are his. Back home, he spent his last years turning those photographs into a hand-carved miniature of the city.
 
-We are the college students who worked beside him. First as field assistants on the expedition, and now as the team responsible for archiving and recompiling his work. A hand-carved model is fragile, and photographs fade, so we rebuilt his miniature in Unity to preserve it. Every building is modeled in ProBuilder the way he carved it: block by block, tier by tier. The terrain follows the real height data of the Maya forest. The valley is painted layer by layer, as he painted his model. This project is our recreation of his recreation: a digital archive of a lifetime of searching, and the first step toward a game in which players retrace the expedition and discover The Lost City for themselves.
+We are the college students who worked beside him. First as field assistants on the expedition, and now as the team responsible for archiving and recompiling his work. A hand carved model is fragile, and photographs fade, so we rebuilt his miniature in Unity to preserve it. Every building is modeled in ProBuilder the way he carved it: block by block, tier by tier. The terrain follows the real height data of the Maya forest. The valley is painted layer by layer, as he painted his model. This project is our recreation of his recreation: a digital archive of a lifetime of searching, and the first step toward a game in which players retrace the expedition and discover The Lost City for themselves.
 
 ---
-
-**In our model:**
-- **Pyramid:** four tapered tiers with cornices and a projecting stairway flanked by sloped balustrades (*alfardas*).
-- **Temple:** three doorways, the inner shrine with the Foliated Cross tablet (a cross sprouting maize leaves and ears), a red mansard roof, and the lattice roof comb.
-
-**In our model:** two stacked platforms with stairways, a round base drum, the cylindrical tower with four doorways and stone moldings, and an upper drum with **three window slits** aimed across the valley. A dome replaces the collapsed top.
-
 ### The City
 
 - **Sacbe:** Maya cities were linked by *sacbeob*, raised white causeways of limestone plaster. In Yax Witz, a sacbe joins the temple to the observatory across a central plaza with a round altar.
@@ -51,7 +44,7 @@ We are the college students who worked beside him. First as field assistants on 
 
 | | |
 |---|---|
-| ![Temple of the Foliated Cross](Docs/Screenshots/02_temple_foliated_cross.png) **Temple of the Foliated Cross**: stepped pyramid, projecting stairway, three-door temple, mansard roof and roof comb. | ![El Caracol](Docs/Screenshots/03_el_caracol.png) **El Caracol**: two platforms, round tower with doorways, window slits and dome. |
+| ![Temple](Docs/Screenshots/02_temple_foliated_cross.png) **Temple of the Foliated Cross**: stepped pyramid, projecting stairway, three-door temple, mansard roof and roof comb. | ![El Caracol](Docs/Screenshots/03_el_caracol.png) **El Caracol**: two platforms, round tower with doorways, window slits and dome. |
 | ![Top-down view of the terrain](Docs/Screenshots/04_terrain_top_down.png) **Top-down map**: the valley, the paved plaza and causeway, the trails and the ring of mountains. | ![Plaza at eye level](Docs/Screenshots/05_plaza_eye_level.png) **Eye level from the plaza**: the view a visitor would have walking toward the temple. |
 
 ![The valley seen from the mountains](Docs/Screenshots/06_valley_from_the_mountains.png)
@@ -120,24 +113,10 @@ Both buildings are built entirely from ProBuilder shapes (**Tools › ProBuilder
 
 ### Step 5: Configuring the Scene with Asset Store Assets
 
-> **TODO before submitting:** list the Unity Asset Store packages you imported (name, publisher, link), add screenshots, and describe where you placed each asset.
+> This project used no Asset Store assets. 
 
 - Some Asset Store packages use Built-in Render Pipeline shaders and show up **pink** in URP. We converted them with **Edit › Rendering › Materials › Convert Selected Built-in Materials to URP**.
 
-### Step 6: People, Plants and Animals
-
-- The group `Placeholders_ReplaceWithAssetStore` marks where the characters stand: villagers on the plaza, a priest in the temple doorway, jaguars and a tapir at the valley edge, a deer, and scarlet macaws perched on the stelae.
-
-> **TODO before submitting:** replace each placeholder with an Asset Store model (same position and rotation), add native plants (ceiba trees, palms, ferns), and add screenshots.
-
-### Step 7: Lighting and Atmosphere
-
-1. **Sunlight:** a directional light with soft shadows.
-2. **Sky:** a procedural skybox.
-3. **Haze:** light exponential fog to suggest the humid air of the rainforest.
-4. **Camera:** the Main Camera frames the overview of the valley.
-5. 
----
 
 ## References
 
