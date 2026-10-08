@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
@@ -66,9 +66,6 @@ namespace MayanCityTools
         static ProBuilderMesh Stairs(string name, Transform parent, Vector3 basePos, Vector3 size, int steps, Material mat)
             => Place(ShapeGenerator.GenerateStair(PivotLocation.Center, size, steps, true), name, parent, basePos, Quaternion.identity, mat);
 
-        static ProBuilderMesh Prism(string name, Transform parent, Vector3 basePos, Vector3 size, Quaternion rot, Material mat)
-            => Place(ShapeGenerator.GeneratePrism(PivotLocation.Center, size), name, parent, basePos, rot, mat);
-
         static ProBuilderMesh Dome(string name, Transform parent, Vector3 basePos, float radius, Material mat)
         {
             var pb = ShapeGenerator.GenerateIcosahedron(PivotLocation.Center, radius, 2);
@@ -104,7 +101,7 @@ namespace MayanCityTools
 
         /// <summary>
         /// Stepped pyramid (4 tapered tiers with cornices), central stairway with alfardas, a three-door temple
-        /// with an inner sanctuary holding the Foliated Cross tablet, a sloped mansard roof and a latticed roof comb.
+        /// (an open gallery inside) and a sloped mansard roof.
         /// </summary>
         public static GameObject BuildTemple()
         {
@@ -153,43 +150,12 @@ namespace MayanCityTools
             for (int k = 0; k < 7; k++)
                 Box($"Glyph_Block_{k + 1}", walls, new Vector3(-6f + k * 2f, floorY + doorH + 0.25f, frontZ - 0.55f), new Vector3(0.8f, 0.8f, 0.15f), pal.Carving, collider: false);
 
-            // Inner wall separating the front gallery from the sanctuary, with one central doorway.
-            float innerZ = tz + 0.3f;
-            Box("Inner_Wall_L", walls, new Vector3(-4.05f, floorY, innerZ), new Vector3(5.5f, wallH, 0.6f), pal.Limestone);
-            Box("Inner_Wall_R", walls, new Vector3(4.05f, floorY, innerZ), new Vector3(5.5f, wallH, 0.6f), pal.Limestone);
-            Box("Inner_Lintel", walls, new Vector3(0f, floorY + doorH, innerZ), new Vector3(2.6f, wallH - doorH, 0.6f), pal.Limestone);
-
-            // Sanctuary shrine with the Tablet of the Foliated Cross (a cross sprouting maize leaves).
-            var shrine = Group("Sanctuary", temple);
-            float shrineZ = tz + 2.6f;
-            Box("Shrine", shrine, new Vector3(0f, floorY, shrineZ), new Vector3(4.5f, 3f, 2.2f), pal.Stucco);
-            float faceZ = shrineZ - 1.1f;
-            Box("Tablet", shrine, new Vector3(0f, floorY + 0.5f, faceZ - 0.08f), new Vector3(2.6f, 2.1f, 0.15f), pal.Carving, collider: false);
-            Box("Cross_Vertical", shrine, new Vector3(0f, floorY + 0.7f, faceZ - 0.2f), new Vector3(0.35f, 1.6f, 0.1f), pal.Stone, collider: false);
-            Box("Cross_Horizontal", shrine, new Vector3(0f, floorY + 1.6f, faceZ - 0.2f), new Vector3(1.5f, 0.3f, 0.1f), pal.Stone, collider: false);
-            for (int s = -1; s <= 1; s += 2)
-            {
-                Box(s < 0 ? "Maize_Leaf_L" : "Maize_Leaf_R", shrine, new Vector3(s * 0.85f, floorY + 1.55f, faceZ - 0.2f),
-                    new Vector3(0.18f, 0.6f, 0.08f), pal.Feather, rot: Quaternion.Euler(0f, 0f, -s * 40f), collider: false);
-                Box(s < 0 ? "Maize_Ear_L" : "Maize_Ear_R", shrine, new Vector3(s * 0.4f, floorY + 0.9f, faceZ - 0.2f),
-                    new Vector3(0.16f, 0.5f, 0.08f), pal.MacawYellow, rot: Quaternion.Euler(0f, 0f, -s * 25f), collider: false);
-            }
-
             // Mansard roof (sloping upper facade) and the latticed roof comb (cresteria).
             var roof = Group("Roof", temple);
             float roofY = floorY + wallH;
             Box("Ceiling_Slab", roof, new Vector3(0f, roofY, tz), new Vector3(tw + 0.2f, 0.3f, td + 0.2f), pal.Limestone);
             Box("Mansard_Roof", roof, new Vector3(0f, roofY + 0.3f, tz), new Vector3(tw + 0.2f, 2.4f, td + 0.2f), pal.Stucco, 1.6f, 2.0f);
             Box("Roof_Cap", roof, new Vector3(0f, roofY + 2.7f, tz), new Vector3(12.8f, 0.3f, 6f), pal.Limestone);
-
-            var comb = Group("Roof_Comb", temple);
-            float combY = roofY + 3f;
-            Box("Comb_Base", comb, new Vector3(0f, combY, tz), new Vector3(10f, 0.6f, 1.4f), pal.Stone);
-            for (int k = 0; k < 6; k++)
-                Box($"Comb_Post_{k + 1}", comb, new Vector3(-4.5f + k * 1.8f, combY + 0.6f, tz), new Vector3(0.6f, 5f, 0.9f), pal.Stone);
-            for (int k = 0; k < 3; k++)
-                Box($"Comb_Bar_{k + 1}", comb, new Vector3(0f, combY + 1.6f + k * 1.3f, tz), new Vector3(10f, 0.45f, 0.9f), pal.Stone);
-            Box("Comb_Crest", comb, new Vector3(0f, combY + 5.6f, tz), new Vector3(10.4f, 0.8f, 1.2f), pal.Stucco, 1.2f, 0.1f);
 
             MayanCityBuilder.Log($"Step 3: Temple of the Foliated Cross built at {root.position} ({root.GetComponentsInChildren<ProBuilderMesh>().Length} ProBuilder shapes)");
             return root.gameObject;
@@ -199,7 +165,7 @@ namespace MayanCityTools
 
         /// <summary>
         /// Two stacked rectangular platforms with stairways, a round drum, the cylindrical observatory tower
-        /// with four doorways and mouldings, an upper drum with three astronomical window slits and a dome.
+        /// with mouldings, an upper drum and a dome.
         /// </summary>
         public static GameObject BuildCaracol()
         {
@@ -230,26 +196,8 @@ namespace MayanCityTools
             Cyl("Medial_Moulding", tower, new Vector3(c.x, towerY + 5.1f, c.z), 5.9f, 0.4f, pal.Stone);
             Cyl("Top_Cornice", tower, new Vector3(c.x, towerY + 7.5f, c.z), 6.0f, 0.5f, pal.Stone);
 
-            // Four doorways at the cardinal points.
-            for (int k = 0; k < 4; k++)
-            {
-                var rot = Quaternion.Euler(0f, k * 90f, 0f);
-                var dir = rot * Vector3.back;
-                var at = new Vector3(c.x, towerY, c.z) + dir * 5.45f;
-                Box($"Doorway_{k + 1}", tower, at, new Vector3(1.6f, 2.8f, 0.6f), pal.Dark, rot: Quaternion.LookRotation(dir), collider: false);
-                Box($"Door_Lintel_{k + 1}", tower, at + Vector3.up * 2.8f + dir * 0.05f, new Vector3(2.2f, 0.4f, 0.8f), pal.Stone, rot: Quaternion.LookRotation(dir), collider: false);
-            }
-
             float drumY = towerY + 8f;
             Cyl("Upper_Drum", tower, new Vector3(c.x, drumY, c.z), 3.6f, 2.6f, pal.Limestone);
-            // The real Caracol's surviving windows frame the equinox sunset and the extremes of Venus.
-            float[] windowAngles = { -30f, 0f, 45f };
-            for (int k = 0; k < windowAngles.Length; k++)
-            {
-                var dir = Quaternion.Euler(0f, windowAngles[k], 0f) * Vector3.back;
-                Box($"Astronomical_Window_{k + 1}", tower, new Vector3(c.x, drumY + 0.7f, c.z) + dir * 3.45f,
-                    new Vector3(0.45f, 1.3f, 0.5f), pal.Dark, rot: Quaternion.LookRotation(dir), collider: false);
-            }
             Cyl("Drum_Cornice", tower, new Vector3(c.x, drumY + 2.6f, c.z), 3.9f, 0.3f, pal.Stone);
             Dome("Dome", tower, new Vector3(c.x, drumY + 2.9f - 3.3f, c.z), 3.3f, pal.Limestone);
 
@@ -259,7 +207,7 @@ namespace MayanCityTools
 
         // ------------------------------------------------------------------ city details
 
-        /// <summary>Sacbe (white causeway) linking both buildings, central altar, stelae and thatched houses.</summary>
+        /// <summary>Sacbe (white causeway) linking both buildings across the plaza.</summary>
         public static GameObject BuildCityDetails()
         {
             var pal = Palette.Load();
@@ -274,154 +222,202 @@ namespace MayanCityTools
             var ground = MayanCityBuilder.Ground(mid);
             Box("Sacbe_Causeway", root, ground + Vector3.down * 0.2f, new Vector3(6f, 0.6f, dir.magnitude), pal.Limestone,
                 0.3f, 0f, Quaternion.LookRotation(dir));
-            Cyl("Central_Altar", root, MayanCityBuilder.Ground(plaza) + Vector3.up * 0.4f, 3f, 0.9f, pal.Stone);
-            Cyl("Central_Altar_Top", root, MayanCityBuilder.Ground(plaza) + Vector3.up * 1.3f, 2.4f, 0.3f, pal.Carving);
 
-            var perp = new Vector2(-dir.z, dir.x).normalized;
-            var along = new Vector2(dir.x, dir.z).normalized;
-            var stelae = Group("Stelae", root);
-            int n = 0;
-            foreach (var offset in new[] { perp * 16f + along * 10f, perp * 16f - along * 10f, -perp * 16f + along * 10f, -perp * 16f - along * 10f })
-            {
-                n++;
-                var p = MayanCityBuilder.Ground(plaza + offset);
-                var facing = Quaternion.LookRotation(new Vector3(-offset.x, 0f, -offset.y));
-                var st = Group($"Stela_{n}", stelae);
-                st.position = p;
-                st.rotation = facing;
-                Box("Shaft", st, Vector3.zero, new Vector3(1f, 3.4f, 0.55f), pal.Stone);
-                Box("Carved_Face", st, new Vector3(0f, 0.5f, 0.3f), new Vector3(0.8f, 2.6f, 0.08f), pal.Carving, collider: false);
-                Box("Cap", st, new Vector3(0f, 3.4f, 0f), new Vector3(1.2f, 0.35f, 0.7f), pal.Limestone, 0.15f, 0.1f);
-                Cyl("Altar", st, new Vector3(0f, 0f, 1.8f), 0.8f, 0.6f, pal.Stone, 16);
-            }
-
-            var houses = Group("Houses", root);
-            var spots = new[] { new Vector2(258f, 232f), new Vector2(226f, 262f), new Vector2(148f, 172f), new Vector2(176f, 150f) };
-            for (int i = 0; i < spots.Length; i++)
-            {
-                var p = MayanCityBuilder.Ground(spots[i]);
-                var h = Group($"House_{i + 1}", houses);
-                h.position = p;
-                h.rotation = Quaternion.LookRotation(new Vector3(plaza.x - spots[i].x, 0f, plaza.y - spots[i].y));
-                Box("House_Platform", h, new Vector3(0f, -0.5f, 0f), new Vector3(9f, 1.3f, 7f), pal.Stone, 0.3f, 0.3f);
-                Box("Walls", h, new Vector3(0f, 0.8f, 0f), new Vector3(6f, 2.2f, 3.8f), pal.Whitewash);
-                Box("Doorway", h, new Vector3(0f, 0.8f, 1.72f), new Vector3(1.1f, 1.8f, 0.4f), pal.Dark, collider: false);
-                // Prism ridge runs along local Z, so rotate 90 degrees to put the ridge along the long axis.
-                Prism("Thatch_Roof", h, new Vector3(0f, 3f, 0f), new Vector3(5f, 3f, 7.2f), Quaternion.Euler(0f, 90f, 0f), pal.Thatch);
-            }
-
-            MayanCityBuilder.Log("Step 5: sacbe, central altar, 4 stelae and 4 thatched houses built");
+            MayanCityBuilder.Log("Step 5: sacbe causeway built");
             return root.gameObject;
         }
 
-        // ------------------------------------------------------------------ placeholders
+        // ------------------------------------------------------------------ Asset Store characters
 
-        static GameObject Prim(string name, PrimitiveType type, Transform parent, Vector3 localPos, Vector3 scale, Material mat, Quaternion? rot = null)
-        {
-            var g = GameObject.CreatePrimitive(type);
-            Object.DestroyImmediate(g.GetComponent<Collider>());
-            g.name = name;
-            g.transform.SetParent(parent, false);
-            g.transform.localPosition = localPos;
-            g.transform.localRotation = rot ?? Quaternion.identity;
-            g.transform.localScale = scale;
-            g.GetComponent<MeshRenderer>().sharedMaterial = mat;
-            return g;
-        }
+        // "Animals FREE - Animated Low Poly 3D Models" (ithappy) and "Robot Humanoid lowpoly" (Quad.Vertex).
+        const string TigerPrefab = "Assets/ithappy/Animals_FREE/Prefabs/Tiger_001.prefab";
+        const string RobotPrefab = "Assets/Quad.Vertex/Prefab/Robot_grey.prefab";
 
-        static Transform Person(string name, Transform parent, Vector3 pos, float yaw, Material cloth, Palette pal, bool priest = false)
-        {
-            var t = Group(name, parent);
-            t.position = pos;
-            t.rotation = Quaternion.Euler(0f, yaw, 0f);
-            Prim("Legs", PrimitiveType.Capsule, t, new Vector3(0f, 0.45f, 0f), new Vector3(0.32f, 0.45f, 0.26f), pal.Skin);
-            Prim("Tunic", PrimitiveType.Capsule, t, new Vector3(0f, 1.05f, 0f), new Vector3(0.46f, 0.42f, 0.32f), cloth);
-            Prim("Head", PrimitiveType.Sphere, t, new Vector3(0f, 1.6f, 0f), Vector3.one * 0.27f, pal.Skin);
-            if (priest)
-            {
-                Prim("Headdress", PrimitiveType.Cube, t, new Vector3(0f, 1.95f, -0.05f), new Vector3(0.5f, 0.55f, 0.08f), pal.Feather);
-                Prim("Cape", PrimitiveType.Cube, t, new Vector3(0f, 1.1f, -0.2f), new Vector3(0.6f, 0.9f, 0.05f), pal.ClothRed);
-            }
-            return t;
-        }
-
-        static Transform Quadruped(string name, Transform parent, Vector3 pos, float yaw, Material body, Material accent, float size, float legLen, bool spots)
-        {
-            var t = Group(name, parent);
-            t.position = pos;
-            t.rotation = Quaternion.Euler(0f, yaw, 0f);
-            t.localScale = Vector3.one * size;
-            float bodyY = legLen + 0.25f;
-            Prim("Body", PrimitiveType.Capsule, t, new Vector3(0f, bodyY, 0f), new Vector3(0.5f, 0.7f, 0.5f), body, Quaternion.Euler(90f, 0f, 0f));
-            Prim("Head", PrimitiveType.Sphere, t, new Vector3(0f, bodyY + 0.2f, 0.8f), Vector3.one * 0.42f, body);
-            foreach (var x in new[] { -0.15f, 0.15f })
-                foreach (var z in new[] { -0.45f, 0.45f })
-                    Prim("Leg", PrimitiveType.Cylinder, t, new Vector3(x, legLen / 2f, z), new Vector3(0.12f, legLen / 2f, 0.12f), body);
-            Prim("Tail", PrimitiveType.Cylinder, t, new Vector3(0f, bodyY, -0.95f), new Vector3(0.07f, 0.4f, 0.07f), accent, Quaternion.Euler(-60f, 0f, 0f));
-            if (spots)
-                for (int i = 0; i < 6; i++)
-                    Prim("Spot", PrimitiveType.Sphere, t, new Vector3((i % 2 == 0 ? -1 : 1) * 0.2f, bodyY + 0.12f, -0.4f + i * 0.16f), Vector3.one * 0.12f, accent);
-            return t;
-        }
-
-        static Transform Macaw(string name, Transform parent, Vector3 pos, float yaw, Palette pal)
-        {
-            var t = Group(name, parent);
-            t.position = pos;
-            t.rotation = Quaternion.Euler(0f, yaw, 0f);
-            Prim("Body", PrimitiveType.Capsule, t, new Vector3(0f, 0.25f, 0f), new Vector3(0.16f, 0.2f, 0.16f), pal.MacawRed, Quaternion.Euler(15f, 0f, 0f));
-            Prim("Head", PrimitiveType.Sphere, t, new Vector3(0f, 0.5f, 0.05f), Vector3.one * 0.13f, pal.MacawRed);
-            Prim("Wing_L", PrimitiveType.Cube, t, new Vector3(-0.09f, 0.25f, -0.02f), new Vector3(0.03f, 0.22f, 0.12f), pal.MacawBlue);
-            Prim("Wing_R", PrimitiveType.Cube, t, new Vector3(0.09f, 0.25f, -0.02f), new Vector3(0.03f, 0.22f, 0.12f), pal.MacawBlue);
-            Prim("Wing_Band", PrimitiveType.Cube, t, new Vector3(0f, 0.33f, -0.07f), new Vector3(0.19f, 0.05f, 0.05f), pal.MacawYellow);
-            Prim("Tail", PrimitiveType.Cube, t, new Vector3(0f, 0.02f, -0.12f), new Vector3(0.05f, 0.4f, 0.03f), pal.MacawRed, Quaternion.Euler(-25f, 0f, 0f));
-            return t;
-        }
+        // The tiger prefab ships with keyboard player controls; in the scene the tigers only play their Animator.
+        static readonly string[] PlayerControlScripts = { "MovePlayerInput", "CreatureMover" };
 
         /// <summary>
-        /// Simple stand-ins for people and native animals. Swap each one for an Asset Store prefab
-        /// (same position/rotation) â€” the rubric expects imported assets here.
+        /// Places the imported Asset Store characters: a group of tigers at the base of El Caracol and one
+        /// robot humanoid at the base of the Temple of the Foliated Cross. Each local position is relative to
+        /// its building, whose local -Z faces the plaza.
         /// </summary>
-        public static GameObject BuildPlaceholders()
+        public static GameObject BuildCharacters()
         {
-            var pal = Palette.Load();
             MayanCityBuilder.RemoveRoot(MayanCityBuilder.PlaceholdersName);
-            var root = new GameObject(MayanCityBuilder.PlaceholdersName).transform;
-            var people = Group("People", root);
-            var animals = Group("Animals", root);
-            var rnd = new System.Random(19);
+            MayanCityBuilder.RemoveRoot(MayanCityBuilder.CharactersName);
+            var root = new GameObject(MayanCityBuilder.CharactersName).transform;
 
-            Vector2 plaza = MayanCityBuilder.PlazaCenter;
-            Material[] cloths = { pal.ClothWhite, pal.ClothRed, pal.ClothBlue };
-            for (int i = 0; i < 10; i++)
+            var caracol = GameObject.Find(MayanCityBuilder.CaracolName);
+            var temple = GameObject.Find(MayanCityBuilder.TempleName);
+            int tigers = 0, robots = 0;
+
+            if (caracol != null)
             {
-                float ang = i * 36f + (float)rnd.NextDouble() * 20f;
-                float r = 9f + (float)rnd.NextDouble() * 14f;
-                var p = plaza + new Vector2(Mathf.Cos(ang * Mathf.Deg2Rad), Mathf.Sin(ang * Mathf.Deg2Rad)) * r;
-                Person($"Villager_{i + 1}", people, MayanCityBuilder.Ground(p), (float)rnd.NextDouble() * 360f, cloths[i % cloths.Length], pal);
+                var group = Group("Tigers", root);
+                // (local x, local z, yaw relative to the building)
+                var spots = new[] { new Vector3(-12f, -23f, 200f), new Vector3(11f, -24.5f, 150f), new Vector3(-24f, -9f, 250f), new Vector3(23.5f, -4f, 100f) };
+                foreach (var s in spots)
+                {
+                    var t = PlaceAsset(TigerPrefab, $"Tiger_{++tigers}", group, caracol.transform, s, 2.6f, false);
+                    if (t == null) { tigers--; break; }
+                }
             }
 
-            var templeGo = GameObject.Find(MayanCityBuilder.TempleName);
-            if (templeGo != null)
+            if (temple != null)
             {
-                var top = templeGo.transform.TransformPoint(new Vector3(0f, 14.5f, -3.2f));
-                Person("Priest_AjKin", people, top, templeGo.transform.eulerAngles.y + 180f, pal.ClothWhite, pal, true);
+                var group = Group("Robots", root);
+                // beside the foot of the main stairway, facing the plaza
+                if (PlaceAsset(RobotPrefab, "Robot_Humanoid", group, temple.transform, new Vector3(10f, -31f, 180f), 2f, true) != null) robots++;
             }
 
-            Quadruped("Jaguar_1", animals, MayanCityBuilder.Ground(new Vector2(118f, 292f)), 120f, pal.Jaguar, pal.JaguarSpots, 1.1f, 0.45f, true);
-            Quadruped("Jaguar_2", animals, MayanCityBuilder.Ground(new Vector2(298f, 132f)), 250f, pal.Jaguar, pal.JaguarSpots, 1.0f, 0.45f, true);
-            Quadruped("WhiteTailed_Deer", animals, MayanCityBuilder.Ground(new Vector2(108f, 206f)), 80f, pal.Deer, pal.ClothWhite, 1.2f, 0.8f, false);
-            Quadruped("Tapir", animals, MayanCityBuilder.Ground(new Vector2(292f, 292f)), 200f, pal.Monkey, pal.Monkey, 1.6f, 0.35f, false);
+            MayanCityBuilder.Log($"Step 7: placed {tigers} tigers (Animals FREE) at El Caracol and {robots} Robot Humanoid at the Temple of the Foliated Cross");
+            return root.gameObject;
+        }
 
-            var stelae = GameObject.Find(MayanCityBuilder.DetailsName + "/Stelae");
-            if (stelae != null)
+        // Instantiates a prefab next to a building, scales it to a real-world size (length for animals,
+        // height for humanoids) and stands it on the terrain.
+        static GameObject PlaceAsset(string prefabPath, string name, Transform parent, Transform building, Vector3 local, float size, bool sizeIsHeight)
+        {
+            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
+            if (prefab == null)
             {
-                int k = 0;
-                foreach (Transform s in stelae.transform)
-                    if (k++ % 2 == 0) Macaw($"Scarlet_Macaw_{k}", animals, s.position + Vector3.up * 3.75f, s.eulerAngles.y, pal);
+                MayanCityBuilder.Log("WARNING: missing Asset Store prefab " + prefabPath + " (import the package first)");
+                return null;
             }
 
-            MayanCityBuilder.Log("Step 7: placeholder villagers, priest, jaguars, deer, tapir and macaws placed (replace with Asset Store prefabs)");
+            var go = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
+            go.name = name;
+            go.transform.SetParent(parent, false);
+            ConvertToUrp(go);
+            foreach (var script in PlayerControlScripts)
+                foreach (var mb in go.GetComponentsInChildren<MonoBehaviour>(true))
+                    if (mb != null && mb.GetType().Name == script) Object.DestroyImmediate(mb);
+
+            var b = WorldBounds(go);
+            float current = sizeIsHeight ? b.size.y : Mathf.Max(b.size.x, b.size.z);
+            if (current > 0.001f) go.transform.localScale *= size / current;
+
+            Vector3 world = building.TransformPoint(new Vector3(local.x, 0f, local.y));
+            go.transform.rotation = building.rotation * Quaternion.Euler(0f, local.z, 0f);
+            go.transform.position = MayanCityBuilder.Ground(new Vector2(world.x, world.z));
+            go.transform.position += Vector3.up * (go.transform.position.y - WorldBounds(go).min.y);
+            return go;
+        }
+
+        static Bounds WorldBounds(GameObject go)
+        {
+            var renderers = go.GetComponentsInChildren<Renderer>();
+            if (renderers.Length == 0) return new Bounds(go.transform.position, Vector3.zero);
+            var b = renderers[0].bounds;
+            foreach (var r in renderers) b.Encapsulate(r.bounds);
+            return b;
+        }
+
+        // Some packages ship Built-in "Standard" materials, which render pink in URP. Switch them to URP Lit,
+        // keeping the albedo, normal and specular maps, the colour and cutout transparency (the same thing
+        // Unity's material converter does). Cutout foliage is also made double-sided.
+        static void ConvertToUrp(GameObject go)
+        {
+            var lit = Shader.Find("Universal Render Pipeline/Lit");
+            if (lit == null) return;
+            foreach (var r in go.GetComponentsInChildren<Renderer>(true))
+                foreach (var m in r.sharedMaterials)
+                {
+                    if (m == null || m.shader == null) continue;
+                    bool specular = m.shader.name == "Standard (Specular setup)";
+                    if (m.shader.name != "Standard" && !specular) continue;
+
+                    var tex = m.GetTexture("_MainTex");
+                    var col = m.GetColor("_Color");
+                    bool cutout = m.HasProperty("_Mode") && Mathf.RoundToInt(m.GetFloat("_Mode")) == 1;
+                    float cutoff = m.HasProperty("_Cutoff") ? m.GetFloat("_Cutoff") : 0.5f;
+
+                    m.shader = lit;
+                    m.SetTexture("_BaseMap", tex);
+                    m.SetColor("_BaseColor", col);
+                    if (m.GetTexture("_BumpMap") != null) m.EnableKeyword("_NORMALMAP");
+                    if (specular)
+                    {
+                        m.SetFloat("_WorkflowMode", 0f);
+                        m.EnableKeyword("_SPECULAR_SETUP");
+                        if (m.GetTexture("_SpecGlossMap") != null) m.EnableKeyword("_METALLICSPECGLOSSMAP");
+                    }
+                    if (cutout)
+                    {
+                        m.SetFloat("_AlphaClip", 1f);
+                        m.SetFloat("_Cutoff", cutoff);
+                        m.EnableKeyword("_ALPHATEST_ON");
+                        m.SetOverrideTag("RenderType", "TransparentCutout");
+                        m.renderQueue = 2450; // AlphaTest
+                        m.SetFloat("_Cull", 0f); // leaves are visible from both sides
+                        m.doubleSidedGI = true;
+                    }
+                    EditorUtility.SetDirty(m);
+                    MayanCityBuilder.Log($"Converted material {m.name} to URP Lit");
+                }
+        }
+
+        // ------------------------------------------------------------------ Asset Store plants
+
+        // "Splash of Color - Unique Photogrammetry Plants". The plain medium-resolution prefabs are used because the
+        // LOD versions swap to billboards that only face the camera in Play mode (they look broken in the editor).
+        const string PlantFolder = "Assets/Splash of Color - Unique Photogrammetry Plants/Prefabs/Medium Resolution Prefabs";
+
+        /// <summary>
+        /// Scatters whole plants from the photogrammetry pack in clusters across the valley and up the gentler
+        /// mountain slopes, keeping them off the plaza, the buildings and the trails.
+        /// </summary>
+        public static GameObject BuildPlants()
+        {
+            MayanCityBuilder.RemoveRoot(MayanCityBuilder.PlantsName);
+            var terrain = MayanCityBuilder.FindTerrain();
+            if (terrain == null) return null;
+            var td = terrain.terrainData;
+
+            // Whole plants only: skip the single-leaf, flower and hanging-vine pieces.
+            var prefabs = AssetDatabase.FindAssets("t:Prefab", new[] { PlantFolder })
+                .Select(AssetDatabase.GUIDToAssetPath)
+                .Where(p => !System.IO.Path.GetFileNameWithoutExtension(p).Contains("Leaf") && !p.Contains("Flower") && !p.Contains("Hanging Luna Vine"))
+                .Select(AssetDatabase.LoadAssetAtPath<GameObject>)
+                .Where(g => g != null)
+                .ToArray();
+            if (prefabs.Length == 0)
+            {
+                MayanCityBuilder.Log("WARNING: no plant prefabs found in " + PlantFolder + " (import the package first)");
+                return null;
+            }
+
+            var root = new GameObject(MayanCityBuilder.PlantsName).transform;
+            var rnd = new System.Random(7);
+            var size = MayanCityBuilder.TerrainSize;
+            const int target = 450;
+            int placed = 0;
+            for (int attempt = 0; attempt < 20000 && placed < target; attempt++)
+            {
+                float u = 0.03f + 0.94f * (float)rnd.NextDouble(), v = 0.03f + 0.94f * (float)rnd.NextDouble();
+                var p = new Vector2(u * size.x, v * size.z);
+                if (MayanCityBuilder.PathDistance(p) < 5f || td.GetSteepness(u, v) > 35f) continue;
+                if (MayanCityBuilder.PlazaWeight(p, 0.5f) > 0.02f) continue;
+                // clusters: plants grow thick in some patches and thin out in others
+                if (Mathf.PerlinNoise(p.x * 0.02f + 5f, p.y * 0.02f + 9f) < (float)rnd.NextDouble() * 0.9f) continue;
+
+                var prefab = prefabs[rnd.Next(prefabs.Length)];
+                var go = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
+                go.name = prefab.name;
+                go.transform.SetParent(root, false);
+                ConvertToUrp(go);
+
+                // keep each plant's own shape; scale so its largest side is 3 - 6.5 m (large jungle ferns and bushes)
+                var b = WorldBounds(go).size;
+                float largest = Mathf.Max(b.x, Mathf.Max(b.y, b.z));
+                float wanted = 3f + 3.5f * (float)rnd.NextDouble();
+                if (largest > 0.001f) go.transform.localScale *= wanted / largest;
+                go.transform.rotation = Quaternion.Euler(0f, (float)rnd.NextDouble() * 360f, 0f);
+                go.transform.position = MayanCityBuilder.Ground(p) + Vector3.down * 0.1f;
+                placed++;
+            }
+
+            MayanCityBuilder.Log($"Step 6: scattered {placed} plants ({prefabs.Length} prefab variants, Splash of Color - Unique Photogrammetry Plants)");
             return root.gameObject;
         }
     }

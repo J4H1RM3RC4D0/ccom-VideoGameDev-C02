@@ -6,7 +6,7 @@ namespace MayanCityTools
 {
     /// <summary>
     /// Lets external tools drive the builder: write a command ("build", "shots", "terrain", "paint",
-    /// "temple", "caracol", "details", "vegetation", "placeholders", "lighting") into mayan_cmd.txt
+    /// "temple", "caracol", "details", "vegetation", "characters", "lighting") into mayan_cmd.txt
     /// at the project root; results are appended to mayan_log.txt. Safe to delete this file.
     /// </summary>
     [InitializeOnLoad]
@@ -104,18 +104,19 @@ namespace MayanCityTools
         {
             if (cmd == "diag") { Diagnose(); return; }
             if (cmd == "fixrp") { FixRenderers(); Diagnose(); return; }
-            if (cmd != "shots") MayanCityBuilder.EnsureScene();
+            if (cmd != "shots" && cmd != "steps") MayanCityBuilder.EnsureScene();
             switch (cmd)
             {
                 case "build": MayanCityBuilder.BuildEverything(); break;
                 case "shots": MayanCityBuilder.CaptureScreenshots(); return;
+                case "steps": MayanCityBuilder.CaptureStepByStep(); return;
                 case "terrain": MayanCityBuilder.BuildTerrain(); break;
                 case "paint": MayanCityBuilder.SculptAndPaint(); break;
                 case "temple": MayanStructures.BuildTemple(); break;
                 case "caracol": MayanStructures.BuildCaracol(); break;
                 case "details": MayanStructures.BuildCityDetails(); break;
                 case "vegetation": MayanCityBuilder.PlaceVegetation(); break;
-                case "placeholders": MayanStructures.BuildPlaceholders(); break;
+                case "characters": MayanStructures.BuildCharacters(); break;
                 case "lighting": MayanCityBuilder.SetupLighting(); break;
                 default: MayanCityBuilder.Log("Unknown command: " + cmd); return;
             }

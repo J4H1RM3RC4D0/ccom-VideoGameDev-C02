@@ -31,7 +31,7 @@ namespace MayanCityTools
 
         // City layout in world XZ (terrain sits at the origin).
         public static readonly Rect Plateau = new Rect(125f, 125f, 160f, 155f);
-        const float PlateauBlend = 30f;
+        const float PlateauBlend = 15f;
         public static readonly Vector2 PlazaCenter = new Vector2(210f, 200f);
         public static readonly Vector2 TemplePos = new Vector2(170f, 240f);
         public static readonly Vector2 CaracolPos = new Vector2(250f, 165f);
@@ -40,7 +40,9 @@ namespace MayanCityTools
         public const string TempleName = "Temple_of_the_Foliated_Cross";
         public const string CaracolName = "El_Caracol_Observatory";
         public const string DetailsName = "City_Details";
-        public const string PlaceholdersName = "Placeholders_ReplaceWithAssetStore";
+        public const string PlaceholdersName = "Placeholders_ReplaceWithAssetStore"; // old stand-ins, removed on rebuild
+        public const string CharactersName = "Characters_AssetStore";
+        public const string PlantsName = "Plants_AssetStore";
 
         // ------------------------------------------------------------------ menu
 
@@ -63,14 +65,14 @@ namespace MayanCityTools
         [MenuItem("Mayan City/Steps/4 - Build El Caracol Observatory", priority = 23)]
         static void Step4() { EnsureScene(); MayanStructures.BuildCaracol(); SaveScene(); }
 
-        [MenuItem("Mayan City/Steps/5 - Build City Details (sacbe, stelae, huts)", priority = 24)]
+        [MenuItem("Mayan City/Steps/5 - Build City Details (sacbe causeway)", priority = 24)]
         static void Step5() { EnsureScene(); MayanStructures.BuildCityDetails(); SaveScene(); }
 
-        [MenuItem("Mayan City/Steps/6 - Paint Trees + Grass Details", priority = 25)]
+        [MenuItem("Mayan City/Steps/6 - Grass Details + Asset Store Plants", priority = 25)]
         static void Step6() { EnsureScene(); PlaceVegetation(); SaveScene(); }
 
-        [MenuItem("Mayan City/Steps/7 - Placeholder People + Animals", priority = 26)]
-        static void Step7() { EnsureScene(); MayanStructures.BuildPlaceholders(); SaveScene(); }
+        [MenuItem("Mayan City/Steps/7 - Asset Store Tigers + Robot Humanoid", priority = 26)]
+        static void Step7() { EnsureScene(); MayanStructures.BuildCharacters(); SaveScene(); }
 
         [MenuItem("Mayan City/Steps/8 - Lighting, Sky, Fog + Camera", priority = 27)]
         static void Step8() { EnsureScene(); SetupLighting(); SaveScene(); }
@@ -80,45 +82,160 @@ namespace MayanCityTools
         {
             EnsureScene();
             Directory.CreateDirectory(ScreenshotDir);
+            foreach (var view in Views())
+                RenderView(view, $"{ScreenshotDir}/{view.name}.png");
+        }
+
+        /// <summary>Renders one view from a temporary camera into a 1920x1080 PNG.</summary>
+        public static void RenderView(View view, string file)
+        {
             const int w = 1920, h = 1080;
             var go = new GameObject("__ShotCam") { hideFlags = HideFlags.HideAndDontSave };
             var cam = go.AddComponent<Camera>();
             cam.farClipPlane = 2500f;
+            bool fog = RenderSettings.fog;
             try
             {
-                foreach (var view in Views())
+                cam.transform.position = view.pos;
+                cam.transform.LookAt(view.target);
+                cam.fieldOfView = view.fov;
+                if (view.name.Contains("top_down")) RenderSettings.fog = false; // a clear map view for the write-up
+                var rt = RenderTexture.GetTemporary(w, h, 24, RenderTextureFormat.ARGB32, RenderTextureReadWrite.sRGB, 4);
+                cam.targetTexture = rt;
+                // Render twice: the terrain builds its grass detail patches for a new camera on the first frame.
+                for (int pass = 0; pass < 2; pass++)
                 {
-                    cam.transform.position = view.pos;
-                    cam.transform.LookAt(view.target);
-                    cam.fieldOfView = view.fov;
-                    bool fog = RenderSettings.fog;
-                    if (view.name.Contains("top_down")) RenderSettings.fog = false; // a clear map view for the write-up
-                    var rt = RenderTexture.GetTemporary(w, h, 24, RenderTextureFormat.ARGB32, RenderTextureReadWrite.sRGB, 4);
-                    cam.targetTexture = rt;
                     var request = new RenderPipeline.StandardRequest { destination = rt };
                     if (RenderPipeline.SupportsRenderRequest(cam, request)) RenderPipeline.SubmitRenderRequest(cam, request);
                     else cam.Render();
-                    RenderSettings.fog = fog;
-
-                    var prev = RenderTexture.active;
-                    RenderTexture.active = rt;
-                    var tex = new Texture2D(w, h, TextureFormat.RGB24, false);
-                    tex.ReadPixels(new Rect(0, 0, w, h), 0, 0);
-                    tex.Apply();
-                    RenderTexture.active = prev;
-                    cam.targetTexture = null;
-                    RenderTexture.ReleaseTemporary(rt);
-
-                    string file = $"{ScreenshotDir}/{view.name}.png";
-                    File.WriteAllBytes(file, tex.EncodeToPNG());
-                    Object.DestroyImmediate(tex);
-                    Log("Screenshot saved: " + file);
                 }
+
+                var prev = RenderTexture.active;
+                RenderTexture.active = rt;
+                var tex = new Texture2D(w, h, TextureFormat.RGB24, false);
+                tex.ReadPixels(new Rect(0, 0, w, h), 0, 0);
+                tex.Apply();
+                RenderTexture.active = prev;
+                cam.targetTexture = null;
+                RenderTexture.ReleaseTemporary(rt);
+
+                Directory.CreateDirectory(Path.GetDirectoryName(file));
+                File.WriteAllBytes(file, tex.EncodeToPNG());
+                Object.DestroyImmediate(tex);
+                Log("Screenshot saved: " + file);
             }
             finally
             {
+                RenderSettings.fog = fog;
                 Object.DestroyImmediate(go);
             }
+        }
+
+        public const string StepShotDir = ScreenshotDir + "/Step_by_Step";
+
+        [MenuItem("Mayan City/Capture Step-by-Step Screenshots (Docs/Screenshots/Step_by_Step)", priority = 41)]
+        public static void CaptureStepByStep()
+        {
+            EnsureScene();
+            if (Directory.Exists(StepShotDir)) Directory.Delete(StepShotDir, true);
+            string Shot(string name, View view) { view.name = name; RenderView(view, $"{StepShotDir}/{name}.png"); return name; }
+            View Named(string name) => Views().First(v => v.name == name);
+
+            // Hide everything built on top of the terrain, then rebuild the scene one step at a time.
+            foreach (var n in new[] { TempleName, CaracolName, DetailsName, CharactersName, PlantsName })
+                SetRootActive(n, false);
+
+            // Step 1: terrain from the RAW height map (33x33), before any sculpting or painting.
+            BuildTerrain();
+            Shot("01_terrain_1_raw_heightmap_overview", Named("01_overview"));
+            Shot("01_terrain_2_raw_heightmap_top_down", Named("04_terrain_top_down"));
+
+            // Step 2: city plateau flattened and the five terrain layers painted.
+            SculptAndPaint();
+            Shot("02_terrain_3_plateau_and_painted_layers_overview", Named("01_overview"));
+            Shot("02_terrain_4_painted_layers_top_down", Named("04_terrain_top_down"));
+
+            // Step 3: grass painted with the Paint Details brush (plants hidden for now).
+            PlaceVegetation();
+            var groundView = PlantCloseUp(); // same spot as the plant close-up later, for a before/after
+            SetRootActive(PlantsName, false);
+            Shot("03_terrain_5_grass_details_close_up", groundView);
+
+            // Step 4: the pyramid (Temple 1), from its foundation to the finished temple.
+            var temple = MayanStructures.BuildTemple().transform;
+            var templeView = Named("02_temple_1");
+            ShowParts(temple, t => t.parent.name == "Pyramid" && (t.name == "Foundation" || t.name.StartsWith("Tier_1")));
+            Shot("04_pyramid_1_foundation_and_first_tier", templeView);
+            ShowParts(temple, t => t.parent.name == "Pyramid");
+            Shot("04_pyramid_2_four_stepped_tiers", templeView);
+            ShowParts(temple, t => t.parent.name == "Pyramid" || t.parent.name == "Main_Stairway");
+            Shot("04_pyramid_3_main_stairway", templeView);
+            ShowParts(temple, t => t.parent.name != "Roof");
+            Shot("04_pyramid_4_temple_walls_and_doorways", templeView);
+            ShowParts(temple, t => true);
+            Shot("04_pyramid_5_finished_with_roof", templeView);
+
+            // Step 5: El Caracol (Temple 2), platform by platform.
+            var caracol = MayanStructures.BuildCaracol().transform;
+            var caracolView = Named("03_temple_2");
+            ShowParts(caracol, t => t.parent.name == "Lower_Platform");
+            Shot("05_observatory_1_lower_platform", caracolView);
+            ShowParts(caracol, t => t.parent.name != "Observatory_Tower");
+            Shot("05_observatory_2_upper_platform", caracolView);
+            ShowParts(caracol, t => t.parent.name != "Observatory_Tower" || !(t.name.StartsWith("Upper_Drum") || t.name.StartsWith("Drum_Cornice") || t.name == "Dome"));
+            Shot("05_observatory_3_round_tower", caracolView);
+            ShowParts(caracol, t => true);
+            Shot("05_observatory_4_finished_with_dome", caracolView);
+
+            // Step 6: the causeway joining both temples.
+            MayanStructures.BuildCityDetails();
+            Shot("06_city_1_causeway_between_temples", Named("01_overview"));
+
+            // Step 7: Asset Store plants, tigers and robot.
+            SetRootActive(PlantsName, true);
+            Shot("07_assets_1_plants_across_the_valley", Named("06_valley_from_the_mountains"));
+            Shot("07_assets_2_plants_close_up", groundView);
+            MayanStructures.BuildCharacters();
+            Shot("07_assets_3_tigers_at_temple_2", Named("07_tigers_at_temple_2"));
+            Shot("07_assets_4_robot_at_temple_1", Named("08_robot_at_temple_1"));
+
+            // Step 8: lighting, sky and fog; the finished scene.
+            SetupLighting();
+            Shot("08_final_1_overview", Named("01_overview"));
+            Shot("08_final_2_top_down", Named("04_terrain_top_down"));
+            Shot("08_final_3_plaza_eye_level", Named("05_plaza_eye_level"));
+            SaveScene();
+            Log("Step-by-step screenshots saved to " + StepShotDir);
+        }
+
+        static void SetRootActive(string name, bool active)
+        {
+            foreach (var go in SceneManager.GetActiveScene().GetRootGameObjects())
+                if (go.name == name) go.SetActive(active);
+        }
+
+        // Shows only the building parts (the shapes with a renderer) that match the stage.
+        static void ShowParts(Transform building, Func<Transform, bool> visible)
+        {
+            foreach (var r in building.GetComponentsInChildren<Renderer>(true))
+                r.gameObject.SetActive(visible(r.transform));
+        }
+
+        // A close look at a cluster of plants on the valley floor.
+        static View PlantCloseUp()
+        {
+            var plants = GameObject.Find(PlantsName);
+            var spot = new Vector3(110f, 0f, 110f);
+            Transform best = null;
+            if (plants != null)
+                foreach (Transform p in plants.transform)
+                    if (best == null || (p.position - spot).sqrMagnitude < (best.position - spot).sqrMagnitude) best = p;
+            var target = best != null ? best.position : Ground(new Vector2(spot.x, spot.z));
+            var toPlaza = Ground(PlazaCenter) - target;
+            toPlaza.y = 0f;
+            var pos = target - toPlaza.normalized * 9f;
+            pos.y = GroundY(pos.x, pos.z) + 3f;
+            return new View { name = "plants", pos = pos, target = target + Vector3.up * 1f, fov = 55f };
         }
 
         // ------------------------------------------------------------------ orchestration
@@ -133,7 +250,7 @@ namespace MayanCityTools
             MayanStructures.BuildCaracol();
             MayanStructures.BuildCityDetails();
             PlaceVegetation();
-            MayanStructures.BuildPlaceholders();
+            MayanStructures.BuildCharacters();
             SetupLighting();
             SaveScene();
             FrameSceneView();
@@ -215,6 +332,11 @@ namespace MayanCityTools
             {
                 src = ProceduralHeights(257);
                 source = "procedural jungle height map (no RAW file found in " + HeightmapDir + ")";
+            }
+            else
+            {
+                src = AddMountainRing(src);
+                source += ", used as the valley floor with a mountain ring sculpted along the borders";
             }
             var heights = Resample(src, HeightmapResolution);
 
@@ -315,27 +437,54 @@ namespace MayanCityTools
 
                     // gentle rolling valley floor
                     float floor = 0.5f * Mathf.PerlinNoise(u * 3f + 13.7f, v * 3f + 4.1f) + 0.5f * Mathf.PerlinNoise(u * 7f + 2.3f, v * 7f + 9.9f);
-
-                    // ridged noise gives sharp crests; a slow noise varies the height of each range
-                    float ridge = 0f, amp = 0.6f, freq = 5f;
-                    for (int o = 0; o < 3; o++)
-                    {
-                        float r = 1f - Mathf.Abs(2f * Mathf.PerlinNoise(u * freq + 31.1f + o * 7f, v * freq + 17.3f) - 1f);
-                        ridge += amp * r * r;
-                        amp *= 0.45f;
-                        freq *= 2.1f;
-                    }
-                    float rangeHeight = Mathf.Lerp(0.45f, 1f, Mathf.PerlinNoise(u * 2.5f + 71f, v * 2.5f + 5f));
-
-                    float edge = Mathf.Min(Mathf.Min(u, 1f - u), Mathf.Min(v, 1f - v));
-                    float band = 1f - Smooth(0.02f, 0.15f, edge);
-                    float cu = 1f - Mathf.Min(u, 1f - u) * 2f, cv = 1f - Mathf.Min(v, 1f - v) * 2f;
-                    float corner = Mathf.Pow(cu * cv, 3f);
-
-                    float mountains = band * (0.25f + 0.55f * ridge * rangeHeight) + corner * (0.25f + 0.35f * ridge);
-                    h[y, x] = Mathf.Clamp01(0.04f + 0.04f * floor + mountains);
+                    h[y, x] = Mathf.Clamp01(0.04f + 0.04f * floor + Mountains(u, v));
                 }
             return h;
+        }
+
+        // Height of the RAW map's relief inside the valley (fraction of the 150 m terrain height).
+        const float RawRelief = 0.24f;
+
+        // The RAW height map forms the hills and hollows of the valley floor; the mountain ring rises around it.
+        static float[,] AddMountainRing(float[,] raw)
+        {
+            int n = raw.GetLength(0);
+            float min = float.MaxValue, max = float.MinValue;
+            foreach (float v in raw) { min = Mathf.Min(min, v); max = Mathf.Max(max, v); }
+            float range = Mathf.Max(max - min, 1e-5f);
+
+            var h = new float[n, n];
+            for (int y = 0; y < n; y++)
+                for (int x = 0; x < n; x++)
+                {
+                    float u = x / (n - 1f), v = y / (n - 1f);
+                    float floor = (raw[y, x] - min) / range;
+                    // high ground in the RAW becomes taller ranges, low ground becomes lower passes
+                    h[y, x] = Mathf.Clamp01(0.03f + RawRelief * floor + Mountains(u, v) * Mathf.Lerp(0.5f, 1.25f, floor));
+                }
+            return h;
+        }
+
+        // A thin band of mountain ranges along the borders, with the highest, most jagged peaks at the corners.
+        static float Mountains(float u, float v)
+        {
+            // ridged noise gives sharp crests; a slow noise varies the height of each range
+            float ridge = 0f, amp = 0.6f, freq = 5f;
+            for (int o = 0; o < 3; o++)
+            {
+                float r = 1f - Mathf.Abs(2f * Mathf.PerlinNoise(u * freq + 31.1f + o * 7f, v * freq + 17.3f) - 1f);
+                ridge += amp * r * r;
+                amp *= 0.45f;
+                freq *= 2.1f;
+            }
+            float rangeHeight = Mathf.Lerp(0.45f, 1f, Mathf.PerlinNoise(u * 2.5f + 71f, v * 2.5f + 5f));
+
+            float edge = Mathf.Min(Mathf.Min(u, 1f - u), Mathf.Min(v, 1f - v));
+            float band = 1f - Smooth(0.02f, 0.15f, edge);
+            float cu = 1f - Mathf.Min(u, 1f - u) * 2f, cv = 1f - Mathf.Min(v, 1f - v) * 2f;
+            float corner = Mathf.Pow(cu * cv, 3f);
+
+            return band * (0.25f + 0.55f * ridge * rangeHeight) + corner * (0.25f + 0.35f * ridge);
         }
 
         static float[,] Resample(float[,] src, int n)
@@ -469,7 +618,7 @@ namespace MayanCityTools
         }
 
         // Paved limestone around the buildings, the central plaza and along the causeway; grass elsewhere.
-        static float PlazaWeight(Vector2 p, float n)
+        public static float PlazaWeight(Vector2 p, float n)
         {
             Vector2 a = TemplePos, b = CaracolPos, ab = b - a;
             float t = Mathf.Clamp01(Vector2.Dot(p - a, ab) / ab.sqrMagnitude);
@@ -527,6 +676,8 @@ namespace MayanCityTools
                 noiseSpread = 0.3f,
             };
             td.detailPrototypes = new[] { grass };
+            // Unity 6 terrains default to Coverage mode (values 0-255); our map stores grass instances per cell.
+            td.SetDetailScatterMode(DetailScatterMode.InstanceCountMode);
 
             int dr = td.detailResolution;
             var map = new int[dr, dr];
@@ -543,6 +694,7 @@ namespace MayanCityTools
             td.SetDetailLayer(0, 0, 0, map);
             EditorUtility.SetDirty(td);
             Log($"Step 6: painted grass details ({dr}x{dr} detail map); no trees");
+            MayanStructures.BuildPlants();
         }
 
         // ------------------------------------------------------------------ lighting & camera
@@ -596,15 +748,33 @@ namespace MayanCityTools
             Vector3 plaza = Ground(PlazaCenter), temple = Ground(TemplePos), caracol = Ground(CaracolPos);
             Vector3 fT = FrontDir(TemplePos, PlazaCenter), fC = FrontDir(CaracolPos, PlazaCenter);
             Vector3 up = Vector3.up;
-            return new List<View>
+            var views = new List<View>
             {
                 new View { name = "01_overview", pos = plaza + new Vector3(-130f, 70f, -120f), target = plaza + up * 8f, fov = 55f },
-                new View { name = "02_temple_foliated_cross", pos = temple + fT * 58f + Vector3.Cross(up, fT) * 16f + up * 18f, target = temple + up * 13f, fov = 50f },
-                new View { name = "03_el_caracol", pos = caracol + fC * 52f - Vector3.Cross(up, fC) * 14f + up * 14f, target = caracol + up * 11f, fov = 50f },
+                new View { name = "02_temple_1", pos = temple + fT * 58f + Vector3.Cross(up, fT) * 16f + up * 18f, target = temple + up * 13f, fov = 50f },
+                new View { name = "03_temple_2", pos = caracol + fC * 52f - Vector3.Cross(up, fC) * 14f + up * 14f, target = caracol + up * 11f, fov = 50f },
                 new View { name = "04_terrain_top_down", pos = new Vector3(200f, 520f, 199f), target = new Vector3(200f, 0f, 200f), fov = 50f },
                 new View { name = "05_plaza_eye_level", pos = plaza - fT * 22f + up * 1.7f, target = temple + up * 14f, fov = 60f },
                 new View { name = "06_valley_from_the_mountains", pos = Ground(new Vector2(45f, 350f)) + up * 6f, target = plaza + up * 10f, fov = 55f },
             };
+            AddCharacterView(views, "07_tigers_at_temple_2", CharactersName + "/Tigers", 30f, 7f);
+            AddCharacterView(views, "08_robot_at_temple_1", CharactersName + "/Robots", 5.5f, 1.6f);
+            return views;
+        }
+
+        // Close-up of the Asset Store characters, seen from the plaza side.
+        static void AddCharacterView(List<View> views, string name, string groupPath, float distance, float height)
+        {
+            var group = GameObject.Find(groupPath);
+            if (group == null || group.transform.childCount == 0) return;
+            var center = Vector3.zero;
+            foreach (Transform c in group.transform) center += c.position;
+            center /= group.transform.childCount;
+            var toPlaza = Ground(PlazaCenter) - center;
+            toPlaza.y = 0f;
+            var pos = center + toPlaza.normalized * distance;
+            pos.y = Mathf.Max(pos.y, GroundY(pos.x, pos.z)) + height;
+            views.Add(new View { name = name, pos = pos, target = center + Vector3.up * 1f, fov = 50f });
         }
 
         static void FrameSceneView()
