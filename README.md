@@ -22,18 +22,22 @@ Unity 6 (6000.5.10f1) · Universal Render Pipeline · ProBuilder 6.1.2
 
 ## The Story
 
-For more than thirty years, Professor Ian Curtis chased a single line of carved glyphs. He first saw it as a child in a museum. The inscription named a lost city. It said the city was "cradled by the mountains", and it claimed that the city's lords had copied the sacred temples of Palenque and the sky-watching tower of Chichén Itzá, then set both inside a single valley. Most of his colleagues thought the city was a myth. The professor spent his summers, his savings, and eventually his career on survey flights, LiDAR maps and long treks through the rainforest of the Maya lowlands. Each season ended the same way: another ridge, another empty valley.
+*The year is 2047.*
 
-In his final field season, the survey team followed a dry riverbed through a gap in a wall of jagged peaks, and the forest opened onto a hidden valley. At its heart stood a stepped pyramid crowned by a roof comb, facing a round observatory across a white stone causeway. Both were almost untouched. The professor photographed every stone. The photographs in this repository are his. Back home, he spent his last years turning those photographs into a hand-carved miniature of the city.
+For most of his career, Professor Ian Curtis searched for a city that no map had ever shown. It was described in many of the ancient Maya scripts he had studied: a lost city "cradled by the mountains", whose lords had built a stepped temple like those of Palenque and a round sky-watching tower like the one at Chichén Itzá, and set both inside a single valley. Most of his colleagues thought the city was a myth. The professor spent decades on survey flights, LiDAR maps and long treks through the rainforest of the Maya lowlands. Each season ended the same way: another ridge, another empty valley.
 
-We are the college students who worked beside him. First as field assistants on the expedition, and now as the team responsible for archiving and recompiling his work. A hand carved model is fragile, and photographs fade, so we rebuilt his miniature in Unity to preserve it. Every building is modeled in ProBuilder the way he carved it: block by block, tier by tier. The terrain follows the real height data of the Maya forest. The valley is painted layer by layer, as he painted his model. This project is our recreation of his recreation: a digital archive of a lifetime of searching, and the first step toward a game in which players retrace the expedition and discover The Lost City for themselves.
+Then he reunited with an old friend from high school. His friend had become a billionaire tech mogul, and, as it turned out, had been fascinated by the ancient Maya cities for just as long. As they talked about the lost city, the mogul made an offer: a new kind of robot, built to travel through any terrain on Earth, with advanced location and tracking systems that could map ruins hidden under the jungle. The professor and his student researchers joined the mogul's engineers to design and build it, and they sent the robot into the rainforest to find the city.
+
+For a year, the robot found nothing. It climbed ridges, crossed rivers and scanned valley after valley, and every report came back empty. Then, one morning, it followed a dry riverbed through a gap in a wall of jagged peaks, and the forest opened onto a hidden valley. At its heart stood a stepped pyramid crowned by a temple, facing a round observatory across a white stone causeway. Both were almost untouched. The robot had finally found the lost city.
+
+**These are the images the robot took.** We are the professor's student researchers, and we rebuilt the city in Unity from the robot's images and scans so that anyone can explore it. Every building is modeled in ProBuilder, block by block and tier by tier. The terrain follows the real height data of the Maya forest, and the valley is painted layer by layer to match what the robot saw. This project is the first step toward a game in which players guide the robot on its search and discover The Lost City for themselves.
 
 ---
 ### The City
 
 - **Causeway:** a raised white stone road joins Temple 1 to Temple 2 across a central plaza.
 - **Tigers:** four tigers prowl around the base of Temple 2.
-- **Robot:** a lone robot humanoid stands at the foot of Temple 1's stairway.
+- **Robot:** the explorer robot that found the city stands at the foot of Temple 1's stairway.
 - **Plants:** hundreds of colorful jungle plants grow in clusters across the valley and up the lower mountain slopes.
 
 ---
@@ -44,10 +48,10 @@ We are the college students who worked beside him. First as field assistants on 
 |---|---|
 | ![Temple 1](Docs/Screenshots/02_temple_1.png) **Temple 1**: stepped pyramid, projecting stairway, three-door temple and sloped roof. | ![Temple 2](Docs/Screenshots/03_temple_2.png) **Temple 2**: two platforms, round tower and dome. |
 | ![Top-down view of the terrain](Docs/Screenshots/04_terrain_top_down.png) **Top-down map**: the valley, the paved plaza and causeway, the trails and the ring of mountains. | ![Plaza at eye level](Docs/Screenshots/05_plaza_eye_level.png) **Eye level from the plaza**: the view a visitor would have walking toward Temple 1. |
-| ![Tigers at Temple 2](Docs/Screenshots/07_tigers_at_temple_2.png) **Tigers**: four tigers prowl around the base of Temple 2. | ![Robot at Temple 1](Docs/Screenshots/08_robot_at_temple_1.png) **Robot humanoid**: a lone robot stands at the foot of Temple 1's stairway. |
+| ![Tigers at Temple 2](Docs/Screenshots/07_tigers_at_temple_2.png) **Tigers**: four tigers prowl around the base of Temple 2. | ![Robot at Temple 1](Docs/Screenshots/08_robot_at_temple_1.png) **The explorer robot**: the robot that found the city, at the foot of Temple 1's stairway. |
 
 ![The valley seen from the mountains](Docs/Screenshots/06_valley_from_the_mountains.png)
-*The valley as the expedition first saw it, looking down from the mountain pass.*
+*The valley as the robot first saw it, looking down from the mountain pass.*
 
 ---
 
